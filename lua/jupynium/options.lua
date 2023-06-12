@@ -101,8 +101,8 @@ M.default_opts = {
   -- Related command :JupyniumKernelHover
   kernel_hover = {
     floating_win_opts = {
-      max_width = 84,
-      border = "none",
+      -- max_width = 84,
+      -- border = "none",
     },
   },
 }

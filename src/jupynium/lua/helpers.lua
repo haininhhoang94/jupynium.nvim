@@ -206,7 +206,7 @@ function Jupynium_start_sync(bufnr, ipynb_filename, ask)
   local conda_or_venv_path = vim.env.CONDA_PREFIX or vim.env.VIRTUAL_ENV
 
   local response =
-    Jupynium_rpcrequest("start_sync", bufnr, false, ipynb_filename, ask, content, buf_filetype, conda_or_venv_path)
+      Jupynium_rpcrequest("start_sync", bufnr, false, ipynb_filename, ask, content, buf_filetype, conda_or_venv_path)
   if response ~= "OK" then
     Jupynium_notify.info { "Cancelling sync.." }
     return
@@ -264,8 +264,8 @@ function Jupynium_start_sync(bufnr, ipynb_filename, ask)
         local visual_start_row = vim.fn.getpos("v")[2] - 1
         Jupynium_rpcnotify("visual_enter", bufnr, true, cursor_pos_row, visual_start_row)
       elseif
-        (old_mode == "v" or old_mode == "V" or old_mode == "\x16")
-        and (new_mode ~= "v" and new_mode ~= "V" and new_mode ~= "\x16")
+          (old_mode == "v" or old_mode == "V" or old_mode == "\x16")
+          and (new_mode ~= "v" and new_mode ~= "V" and new_mode ~= "\x16")
       then
         local winid = vim.call("bufwinid", bufnr)
         local cursor_pos = vim.api.nvim_win_get_cursor(winid)
@@ -614,27 +614,27 @@ function Jupynium_kernel_hover(bufnr)
     local sections = vim.split(inspect.data["text/plain"], "\x1b%[0;31m")
     for _, section in ipairs(sections) do
       section = section
-        -- Strip ANSI Escape code: https://stackoverflow.com/a/55324681
-        -- \x1b is the escape character
-        -- %[%d+; is the ANSI escape code for a digit color
-        :gsub("\x1b%[%d+;%d+;%d+;%d+;%d+m", "")
-        :gsub("\x1b%[%d+;%d+;%d+;%d+m", "")
-        :gsub("\x1b%[%d+;%d+;%d+m", "")
-        :gsub("\x1b%[%d+;%d+m", "")
-        :gsub("\x1b%[%d+m", "")
-        :gsub("\x1b%[H", "\t")
-        -- Groups: name, 0 or more new line, content till end
-        -- TODO: Fix for non-python kernel
-        :gsub("^(Call signature):(%s*)(.-)\n$", "```python\n%3 # %1\n```")
-        :gsub("^(Init signature):(%s*)(.-)\n$", "```python\n%3 # %1\n```")
-        :gsub("^(Signature):(%s*)(.-)\n$",      "```python\n%3 # %1\n```")
-        :gsub("^(String form):(%s*)(.-)\n$",    "```python\n%3 # %1\n```")
-        :gsub("^(Docstring):(%s*)(.-)$",        "\n---\n```rst\n%3\n```")
-        :gsub("^(Class docstring):(%s*)(.-)$",  "\n---\n```rst\n%3\n```")
-        :gsub("^(File):(%s*)(.-)\n$",           "*%1*: `%3`\n")
-        :gsub("^(Type):(%s*)(.-)\n$",           "*%1*: %3\n")
-        :gsub("^(Length):(%s*)(.-)\n$",         "*%1*: %3\n")
-        :gsub("^(Subclasses):(%s*)(.-)\n$",     "*%1*: %3\n")
+          -- Strip ANSI Escape code: https://stackoverflow.com/a/55324681
+          -- \x1b is the escape character
+          -- %[%d+; is the ANSI escape code for a digit color
+          :gsub("\x1b%[%d+;%d+;%d+;%d+;%d+m", "")
+          :gsub("\x1b%[%d+;%d+;%d+;%d+m", "")
+          :gsub("\x1b%[%d+;%d+;%d+m", "")
+          :gsub("\x1b%[%d+;%d+m", "")
+          :gsub("\x1b%[%d+m", "")
+          :gsub("\x1b%[H", "\t")
+          -- Groups: name, 0 or more new line, content till end
+          -- TODO: Fix for non-python kernel
+          :gsub("^(Call signature):(%s*)(.-)\n$", "```python\n%3 # %1\n```")
+          :gsub("^(Init signature):(%s*)(.-)\n$", "```python\n%3 # %1\n```")
+          :gsub("^(Signature):(%s*)(.-)\n$", "```python\n%3 # %1\n```")
+          :gsub("^(String form):(%s*)(.-)\n$", "```python\n%3 # %1\n```")
+          :gsub("^(Docstring):(%s*)(.-)$", "\n---\n```rst\n%3\n```")
+          :gsub("^(Class docstring):(%s*)(.-)$", "\n---\n```rst\n%3\n```")
+          :gsub("^(File):(%s*)(.-)\n$", "*%1*: `%3`\n")
+          :gsub("^(Type):(%s*)(.-)\n$", "*%1*: %3\n")
+          :gsub("^(Length):(%s*)(.-)\n$", "*%1*: %3\n")
+          :gsub("^(Subclasses):(%s*)(.-)\n$", "*%1*: %3\n")
       if section:match "%S" ~= nil and section:match "%S" ~= "" then
         -- Only add non-empty section
         out = out .. section
@@ -645,10 +645,10 @@ function Jupynium_kernel_hover(bufnr)
   local markdown_lines = vim.lsp.util.convert_input_to_markdown_lines(out)
   markdown_lines = vim.lsp.util.trim_empty_lines(markdown_lines)
 
-  local opts = { max_width = 84 }
+  local opts = { max_width = 84, border = "rounded" }
   local ok, options = pcall(require, "jupynium.options")
   if ok then
-    opts = vim.tbl_extend("force", opts, options.opts.kernel_hover.floating_win_opts)
+    opts = vim.tbl_extend("force", opts)
   end
 
   vim.lsp.util.open_floating_preview(markdown_lines, "markdown", opts)
